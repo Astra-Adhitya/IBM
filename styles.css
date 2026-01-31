@@ -1,0 +1,222 @@
+/* ============================================
+   MedAI Healthcare Chatbot - Styles
+   ============================================ */
+
+/* Custom scrollbar for chat area */
+.chat-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-scroll::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.chat-scroll::-webkit-scrollbar-thumb {
+    background: #990808;
+    border-radius: 10px;
+}
+
+.chat-scroll::-webkit-scrollbar-thumb:hover {
+    background: #7a0606;
+}
+
+/* ============================================
+   Message Entrance Animations
+   Calm and clinical animations for chat messages
+   ============================================ */
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.message-enter-right {
+    animation: slideInRight 0.3s ease-out;
+}
+
+.message-enter-left {
+    animation: slideInLeft 0.3s ease-out;
+}
+
+/* ============================================
+   Typing Indicator Animation
+   Subtle animated dots for bot thinking state
+   ============================================ */
+
+@keyframes typingDots {
+    0%, 60%, 100% {
+        opacity: 0.3;
+        transform: translateY(0);
+    }
+    30% {
+        opacity: 1;
+        transform: translateY(-4px);
+    }
+}
+
+.typing-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #666;
+    margin: 0 2px;
+    animation: typingDots 1.4s ease-in-out infinite;
+}
+
+.typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+/* ============================================
+   Button Micro-interactions
+   Gentle and professional hover/active states
+   ============================================ */
+
+.problem-button {
+    transition: all 0.2s ease-out;
+}
+
+.problem-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(153, 8, 8, 0.15);
+}
+
+.problem-button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(153, 8, 8, 0.1);
+}
+
+.cta-chip {
+    transition: all 0.2s ease-out;
+}
+
+.cta-chip:hover {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 2px 8px rgba(153, 8, 8, 0.2);
+}
+
+.cta-chip:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.send-button {
+    transition: all 0.2s ease-out;
+}
+
+.send-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(153, 8, 8, 0.25);
+}
+
+.send-button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(153, 8, 8, 0.15);
+}
+
+/* ============================================
+   Mode Toggle Styles
+   Simple/Advanced mode selector
+   ============================================ */
+
+.mode-toggle-container {
+    display: inline-flex;
+    background: #f3f4f6;
+    border-radius: 8px;
+    padding: 4px;
+    gap: 4px;
+}
+
+.mode-toggle-button {
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease-out;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+    color: #6b7280;
+}
+
+.mode-toggle-button.active {
+    background: white;
+    color: #990808;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   Advanced Filters Section
+   Collapsible filter panel for Advanced Mode
+   ============================================ */
+
+.advanced-filters {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out, padding 0.3s ease-out;
+}
+
+.advanced-filters.visible {
+    max-height: 500px;
+    opacity: 1;
+    padding-top: 16px;
+}
+
+/* ============================================
+   Filter Chip Styles
+   Interactive filter selection chips
+   ============================================ */
+
+.filter-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    background: #f9fafb;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+}
+
+.filter-chip:hover {
+    border-color: #990808;
+    background: #fef2f2;
+    color: #990808;
+}
+
+.filter-chip.selected {
+    background: #990808;
+    border-color: #990808;
+    color: white;
+}
+
+.filter-chip.selected:hover {
+    background: #7a0606;
+    border-color: #7a0606;
+}

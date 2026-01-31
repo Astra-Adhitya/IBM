@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedAI - Healthcare AI Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'medai-primary': '#990808',
+                        'medai-bg': '#fae8d2',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-medai-bg min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center gap-3">
+                <!-- Replace this with your MedAI brand logo -->
+                <div class="w-10 h-10 bg-medai-primary rounded-lg flex items-center justify-center">
+                    <span class="text-white font-bold text-xl">M</span>
+                </div>
+                <h1 class="text-2xl font-bold text-medai-primary">MedAI</h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- Left Panel - Common Problems (25% on desktop) -->
+            <aside class="w-full lg:w-1/4">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Common Problems</h2>
+                    <div class="space-y-3">
+                        <button onclick="sendProblemMessage('Cold & Cough')" class="problem-button w-full text-left px-4 py-3 bg-gray-50 hover:bg-medai-primary hover:text-white rounded-lg transition-colors duration-200 font-medium">
+                            Cold & Cough
+                        </button>
+                        <button onclick="sendProblemMessage('Fever')" class="problem-button w-full text-left px-4 py-3 bg-gray-50 hover:bg-medai-primary hover:text-white rounded-lg transition-colors duration-200 font-medium">
+                            Fever
+                        </button>
+                        <button onclick="sendProblemMessage('Headache')" class="problem-button w-full text-left px-4 py-3 bg-gray-50 hover:bg-medai-primary hover:text-white rounded-lg transition-colors duration-200 font-medium">
+                            Headache
+                        </button>
+                        <button onclick="sendProblemMessage('Body Pain')" class="problem-button w-full text-left px-4 py-3 bg-gray-50 hover:bg-medai-primary hover:text-white rounded-lg transition-colors duration-200 font-medium">
+                            Body Pain
+                        </button>
+                        <button onclick="sendProblemMessage('Stomach Pain')" class="problem-button w-full text-left px-4 py-3 bg-gray-50 hover:bg-medai-primary hover:text-white rounded-lg transition-colors duration-200 font-medium">
+                            Stomach Pain
+                        </button>
+                        <button onclick="sendProblemMessage('Sore Throat')" class="problem-button w-full text-left px-4 py-3 bg-gray-50 hover:bg-medai-primary hover:text-white rounded-lg transition-colors duration-200 font-medium">
+                            Sore Throat
+                        </button>
+                        <button onclick="sendProblemMessage('Fatigue')" class="problem-button w-full text-left px-4 py-3 bg-gray-50 hover:bg-medai-primary hover:text-white rounded-lg transition-colors duration-200 font-medium">
+                            Fatigue
+                        </button>
+                        <button onclick="sendProblemMessage('Nausea')" class="problem-button w-full text-left px-4 py-3 bg-gray-50 hover:bg-medai-primary hover:text-white rounded-lg transition-colors duration-200 font-medium">
+                            Nausea
+                        </button>
+                        <button onclick="sendProblemMessage('Allergy')" class="problem-button w-full text-left px-4 py-3 bg-gray-50 hover:bg-medai-primary hover:text-white rounded-lg transition-colors duration-200 font-medium">
+                            Allergy
+                        </button>
+                        <button onclick="sendProblemMessage('Dizziness')" class="problem-button w-full text-left px-4 py-3 bg-gray-50 hover:bg-medai-primary hover:text-white rounded-lg transition-colors duration-200 font-medium">
+                            Dizziness
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Right Panel - Chatbot (75% on desktop) -->
+            <section class="w-full lg:w-3/4">
+                <div class="bg-white rounded-lg shadow-md flex flex-col" style="height: calc(100vh - 180px); min-height: 600px;">
+                    <!-- Chat Area -->
+                    <div id="chatArea" class="flex-1 p-6 overflow-y-auto chat-scroll">
+                        <!-- Welcome Message -->
+                        <div class="mb-6">
+                            <div class="flex items-start gap-4">
+                                <div class="w-8 h-8 bg-medai-primary rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                    <span class="text-white font-bold text-sm">M</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="bg-gray-100 rounded-lg p-4 inline-block max-w-2xl">
+                                        <p class="text-gray-800 leading-relaxed">
+                                            <strong>Hello, I'm MedAI.</strong> I'm here to help you understand symptoms and medicines safely.
+                                        </p>
+                                    </div>
+                                    <!-- Quick CTA Chips -->
+                                    <div class="mt-4 flex flex-wrap gap-2">
+                                        <button onclick="sendQuickQuery('I have symptoms')" class="cta-chip px-4 py-2 bg-medai-primary text-white rounded-full text-sm hover:bg-opacity-90 transition-colors">
+                                            I have symptoms
+                                        </button>
+                                        <button onclick="sendQuickQuery('About a medicine')" class="cta-chip px-4 py-2 bg-medai-primary text-white rounded-full text-sm hover:bg-opacity-90 transition-colors">
+                                            About a medicine
+                                        </button>
+                                        <button onclick="sendQuickQuery('Is this safe for me?')" class="cta-chip px-4 py-2 bg-medai-primary text-white rounded-full text-sm hover:bg-opacity-90 transition-colors">
+                                            Is this safe for me?
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Input Area -->
+                    <div class="border-t border-gray-200 p-4">
+                        <!-- Mode Toggle -->
+                        <div class="mb-4 flex items-center justify-between">
+                            <div class="mode-toggle-container">
+                                <button 
+                                    id="simpleModeBtn" 
+                                    onclick="switchMode('simple')" 
+                                    class="mode-toggle-button active"
+                                >
+                                    Simple Mode
+                                </button>
+                                <button 
+                                    id="advancedModeBtn" 
+                                    onclick="switchMode('advanced')" 
+                                    class="mode-toggle-button"
+                                >
+                                    Advanced Mode
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Advanced Filters Section -->
+                        <div id="advancedFilters" class="advanced-filters">
+                            <div class="space-y-4 pb-2">
+                                <!-- Medicine Brand Input -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Medicine Brand (Optional)
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        id="medicineBrand" 
+                                        placeholder="e.g., Tylenol, Advil, Claritin"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-medai-primary focus:border-transparent text-sm"
+                                    />
+                                </div>
+
+                                <!-- Drug Category Chips -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Drug Category (Optional)
+                                    </label>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button onclick="toggleFilter('category', 'Pain Relief')" class="filter-chip" data-filter="category" data-value="Pain Relief">
+                                            Pain Relief
+                                        </button>
+                                        <button onclick="toggleFilter('category', 'Antibiotic')" class="filter-chip" data-filter="category" data-value="Antibiotic">
+                                            Antibiotic
+                                        </button>
+                                        <button onclick="toggleFilter('category', 'Allergy')" class="filter-chip" data-filter="category" data-value="Allergy">
+                                            Allergy
+                                        </button>
+                                        <button onclick="toggleFilter('category', 'Antihistamine')" class="filter-chip" data-filter="category" data-value="Antihistamine">
+                                            Antihistamine
+                                        </button>
+                                        <button onclick="toggleFilter('category', 'Antacid')" class="filter-chip" data-filter="category" data-value="Antacid">
+                                            Antacid
+                                        </button>
+                                        <button onclick="toggleFilter('category', 'Cough & Cold')" class="filter-chip" data-filter="category" data-value="Cough & Cold">
+                                            Cough & Cold
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Context Chips -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Context (Optional)
+                                    </label>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button onclick="toggleFilter('context', 'Adult')" class="filter-chip" data-filter="context" data-value="Adult">
+                                            Adult
+                                        </button>
+                                        <button onclick="toggleFilter('context', 'Child')" class="filter-chip" data-filter="context" data-value="Child">
+                                            Child
+                                        </button>
+                                        <button onclick="toggleFilter('context', 'Pregnancy')" class="filter-chip" data-filter="context" data-value="Pregnancy">
+                                            Pregnancy
+                                        </button>
+                                        <button onclick="toggleFilter('context', 'Chronic Condition')" class="filter-chip" data-filter="context" data-value="Chronic Condition">
+                                            Chronic Condition
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Message Input -->
+                        <div class="flex gap-3 mt-4">
+                            <input 
+                                type="text" 
+                                id="userInput" 
+                                placeholder="Type your message here..." 
+                                class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-medai-primary focus:border-transparent"
+                                onkeypress="handleKeyPress(event)"
+                            />
+                            <button 
+                                onclick="sendMessage()" 
+                                class="send-button px-6 py-3 bg-medai-primary text-white rounded-lg hover:bg-opacity-90 transition-colors font-medium"
+                            >
+                                Send
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Medical Disclaimer -->
+                <div class="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+                    <p class="text-sm text-gray-700">
+                        <strong>Medical Disclaimer:</strong> MedAI provides educational information only. It does not diagnose or prescribe. Consult a licensed medical professional.
+                    </p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

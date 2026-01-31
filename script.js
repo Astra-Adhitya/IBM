@@ -13,6 +13,7 @@ let typingIndicator = null;
 // State Management
 // ============================================
 let currentMode = 'simple'; // 'simple' or 'advanced'
+let selectedCountry = 'Global'; // Default country context
 let selectedFilters = {
     category: [],
     context: []
@@ -236,6 +237,14 @@ function toggleFilter(filterType, value) {
 }
 
 /**
+ * Update country context for region-aware responses
+ * @param {string} country - Selected country name
+ */
+function updateCountryContext(country) {
+    selectedCountry = country;
+}
+
+/**
  * Build structured query from user input and selected filters
  * This structured query will later be sent to the AI agent (e.g., IBM Watsonx Orchestrate)
  * @param {string} userMessage - User's message text
@@ -244,10 +253,19 @@ function toggleFilter(filterType, value) {
 function buildStructuredQuery(userMessage) {
     const medicineBrand = document.getElementById('medicineBrand').value.trim();
     
+    // Add country context to user message internally (for AI agent processing)
+    // This helps tailor responses to region-specific medical information
+    let contextualMessage = userMessage;
+    if (selectedCountry && selectedCountry !== 'Global') {
+        contextualMessage = `Provide educational medical information based on medicines commonly used in ${selectedCountry}. ${userMessage}`;
+    }
+    
     // Build structured query object
     const structuredQuery = {
         userMessage: userMessage,
+        contextualMessage: contextualMessage, // Internal message with country context
         mode: currentMode,
+        country: selectedCountry,
         filters: {
             medicineBrand: medicineBrand || null,
             drugCategory: selectedFilters.category.length > 0 ? selectedFilters.category : null,
@@ -256,8 +274,8 @@ function buildStructuredQuery(userMessage) {
     };
 
     // Convert to query string format for future API integration
-    // Example format: "userMessage=I have fever&mode=advanced&medicineBrand=Tylenol&category=Pain Relief&context=Adult"
-    let queryString = `userMessage=${encodeURIComponent(userMessage)}&mode=${currentMode}`;
+    // Example format: "userMessage=I have fever&mode=advanced&country=India&medicineBrand=Tylenol&category=Pain Relief&context=Adult"
+    let queryString = `userMessage=${encodeURIComponent(userMessage)}&mode=${currentMode}&country=${encodeURIComponent(selectedCountry)}`;
     
     if (medicineBrand) {
         queryString += `&medicineBrand=${encodeURIComponent(medicineBrand)}`;
@@ -272,6 +290,7 @@ function buildStructuredQuery(userMessage) {
     }
 
     // TODO: This structured query will be sent to the AI agent backend
+    // The contextualMessage field contains the user message with country-specific context
     // Example API integration:
     // const response = await fetch('/api/chat', {
     //     method: 'POST',
@@ -328,10 +347,13 @@ function sendMessage() {
     // Build structured query from user input and filters
     const queryData = buildStructuredQuery(message);
     
-    // Display user message (show filters in advanced mode if any are selected)
+    // Display user message (show filters and country in advanced mode if any are selected)
     let displayMessage = message;
     if (currentMode === 'advanced') {
         const filters = [];
+        if (selectedCountry && selectedCountry !== 'Global') {
+            filters.push(`Country: ${selectedCountry}`);
+        }
         if (queryData.structured.filters.medicineBrand) {
             filters.push(`Brand: ${queryData.structured.filters.medicineBrand}`);
         }
@@ -416,5 +438,146 @@ function sendQuickQuery(query) {
 function handleKeyPress(event) {
     if (event.key === 'Enter') {
         sendMessage();
+    }
+}
+
+// ============================================
+// Medicine Equivalents Finder Functions
+// Educational reference tool for cross-country medicine comparison
+// ============================================
+
+/**
+ * Open the Medicine Equivalents panel
+ */
+function openMedicineEquivalents() {
+    const panel = document.getElementById('equivalentsPanel');
+    panel.classList.add('active');
+    // Prevent body scroll when panel is open
+    document.body.style.overflow = 'hidden';
+}
+
+/**
+ * Close the Medicine Equivalents panel
+ */
+function closeMedicineEquivalents() {
+    const panel = document.getElementById('equivalentsPanel');
+    panel.classList.remove('active');
+    // Restore body scroll
+    document.body.style.overflow = '';
+}
+
+/**
+ * Find medicine equivalent based on selected countries and medicine name
+ * Builds structured query for future IBM Watsonx Orchestrate integration
+ */
+function findMedicineEquivalent() {
+    const fromCountry = document.getElementById('fromCountry').value;
+    const toCountry = document.getElementById('toCountry').value;
+    const medicineName = document.getElementById('medicineName').value.trim();
+    const resultArea = document.getElementById('equivalentsResult');
+
+    // Validate input
+    if (!medicineName) {
+        resultArea.innerHTML = '<p class="text-red-600 text-sm">Please enter a medicine name.</p>';
+        resultArea.classList.add('has-content');
+        return;
+    }
+
+    // Build structured query for AI agent
+    // This will later be sent to IBM Watsonx Orchestrate
+    const structuredQuery = {
+        type: 'medicine_equivalent',
+        fromCountry: fromCountry,
+        toCountry: toCountry,
+        medicineName: medicineName,
+        query: `Provide educational information about medicines commonly used in ${toCountry} that have the same active ingredient or therapeutic purpose as ${medicineName} commonly used in ${fromCountry}.`
+    };
+
+    // Show loading state
+    resultArea.innerHTML = '<p class="text-gray-500 text-sm">Searching for educational reference information...</p>';
+    resultArea.classList.add('loading');
+    resultArea.classList.remove('has-content');
+
+    // Simulate API call delay
+    setTimeout(() => {
+        // TODO: Replace this with actual API integration
+        // Example API integration:
+        // const response = await fetch('/api/medicine-equivalent', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(structuredQuery)
+        // });
+        // const data = await response.json();
+        // displayEquivalentResult(data.response);
+
+        // Mock response for demonstration
+        const mockResponse = generateMockEquivalentResponse(fromCountry, toCountry, medicineName);
+        displayEquivalentResult(mockResponse);
+    }, 1000 + Math.random() * 500);
+}
+
+/**
+ * Display the equivalent result in the result area
+ * @param {string} response - Response text to display
+ */
+function displayEquivalentResult(response) {
+    const resultArea = document.getElementById('equivalentsResult');
+    resultArea.innerHTML = `<div class="text-gray-800">${escapeHtml(response)}</div>`;
+    resultArea.classList.remove('loading');
+    resultArea.classList.add('has-content');
+}
+
+/**
+ * Generate mock response for medicine equivalent
+ * In production, this will come from IBM Watsonx Orchestrate
+ * @param {string} fromCountry - Source country
+ * @param {string} toCountry - Target country
+ * @param {string} medicineName - Medicine name
+ * @returns {string} Mock educational response
+ */
+function generateMockEquivalentResponse(fromCountry, toCountry, medicineName) {
+    // This is a mock response for UI demonstration
+    // In production, this will be replaced with actual AI agent response
+    
+    const responses = {
+        'Paracetamol': `Educational Reference Information:
+
+${medicineName} (commonly known as Paracetamol or Acetaminophen) is widely used in ${fromCountry} for pain relief and fever reduction.
+
+In ${toCountry}, medicines with the same active ingredient (acetaminophen) are commonly available under various brand names. These medicines serve the same therapeutic purpose and contain the same active ingredient.
+
+Common brand names in ${toCountry} may include formulations containing acetaminophen/paracetamol. The active ingredient works the same way regardless of the brand name.
+
+Important Educational Note: This information is for educational reference only. Different countries may have varying formulations, strengths, and availability. Always consult with a licensed healthcare professional in your country for appropriate medical guidance.`,
+
+        'Ibuprofen': `Educational Reference Information:
+
+${medicineName} (Ibuprofen) is commonly used in ${fromCountry} as a nonsteroidal anti-inflammatory drug (NSAID) for pain, inflammation, and fever.
+
+In ${toCountry}, medicines containing ibuprofen as the active ingredient are available under various brand names. These medicines have the same therapeutic purpose and active ingredient.
+
+Common formulations in ${toCountry} may include ibuprofen tablets, capsules, or liquid forms. The active ingredient provides the same therapeutic effect regardless of the brand.
+
+Important Educational Note: This information is for educational reference only. Formulations, dosages, and availability may vary by country. Consult a licensed healthcare professional for appropriate medical advice.`,
+
+        'default': `Educational Reference Information:
+
+${medicineName} is commonly used in ${fromCountry} for therapeutic purposes.
+
+In ${toCountry}, medicines with the same active ingredient or therapeutic purpose as ${medicineName} may be available under different brand names. These medicines serve similar therapeutic functions.
+
+The active ingredient or therapeutic mechanism remains the same, though brand names, formulations, and availability may differ between countries.
+
+Important Educational Note: This information is for educational reference only. Medicine availability, formulations, and regulations vary by country. Always consult with a licensed healthcare professional in your country for appropriate medical guidance.`
+    };
+
+    // Check for specific medicine responses, otherwise use default
+    const medicineLower = medicineName.toLowerCase();
+    if (medicineLower.includes('paracetamol') || medicineLower.includes('acetaminophen')) {
+        return responses['Paracetamol'];
+    } else if (medicineLower.includes('ibuprofen')) {
+        return responses['Ibuprofen'];
+    } else {
+        return responses['default'];
     }
 }

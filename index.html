@@ -23,12 +23,20 @@
     <!-- Header -->
     <header class="bg-white shadow-md">
         <div class="container mx-auto px-4 py-4">
-            <div class="flex items-center gap-3">
-                <!-- Replace this with your MedAI brand logo -->
-                <div class="w-10 h-10 bg-medai-primary rounded-lg flex items-center justify-center">
-                    <span class="text-white font-bold text-xl">M</span>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <!-- Replace this with your MedAI brand logo -->
+                    <div class="w-10 h-10 bg-medai-primary rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">M</span>
+                    </div>
+                    <h1 class="text-2xl font-bold text-medai-primary">MedAI</h1>
                 </div>
-                <h1 class="text-2xl font-bold text-medai-primary">MedAI</h1>
+                <button 
+                    onclick="openMedicineEquivalents()" 
+                    class="medicine-equivalents-btn px-4 py-2 text-sm font-medium text-medai-primary hover:bg-medai-bg rounded-lg transition-colors"
+                >
+                    Medicine Equivalents
+                </button>
             </div>
         </div>
     </header>
@@ -111,8 +119,8 @@
 
                     <!-- Input Area -->
                     <div class="border-t border-gray-200 p-4">
-                        <!-- Mode Toggle -->
-                        <div class="mb-4 flex items-center justify-between">
+                        <!-- Mode Toggle and Country Selector -->
+                        <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
                             <div class="mode-toggle-container">
                                 <button 
                                     id="simpleModeBtn" 
@@ -128,6 +136,22 @@
                                 >
                                     Advanced Mode
                                 </button>
+                            </div>
+                            <!-- Country Selector -->
+                            <div class="country-selector-container">
+                                <label for="countrySelect" class="country-label">Country</label>
+                                <select 
+                                    id="countrySelect" 
+                                    class="country-select"
+                                    onchange="updateCountryContext(this.value)"
+                                >
+                                    <option value="Global">Global</option>
+                                    <option value="India">India</option>
+                                    <option value="United States">United States</option>
+                                    <option value="United Kingdom">United Kingdom</option>
+                                    <option value="Canada">Canada</option>
+                                    <option value="Australia">Australia</option>
+                                </select>
                             </div>
                         </div>
 
@@ -225,6 +249,110 @@
             </section>
         </div>
     </main>
+
+    <!-- Medicine Equivalents Panel (Slide-in from right) -->
+    <div id="equivalentsPanel" class="equivalents-panel">
+        <div class="equivalents-panel-overlay" onclick="closeMedicineEquivalents()"></div>
+        <div class="equivalents-panel-content">
+            <!-- Panel Header -->
+            <div class="equivalents-panel-header">
+                <h2 class="text-xl font-semibold text-gray-800">Medicine Equivalents Finder</h2>
+                <button 
+                    onclick="closeMedicineEquivalents()" 
+                    class="equivalents-close-btn"
+                    aria-label="Close panel"
+                >
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Panel Body -->
+            <div class="equivalents-panel-body">
+                <p class="text-sm text-gray-600 mb-6">
+                    Educational reference tool for comparing medicines across countries by active ingredient or therapeutic purpose.
+                </p>
+
+                <!-- Two-Column Layout -->
+                <div class="equivalents-layout">
+                    <!-- Left Column -->
+                    <div class="equivalents-column">
+                        <div class="mb-4">
+                            <label for="fromCountry" class="block text-sm font-medium text-gray-700 mb-2">
+                                From Country
+                            </label>
+                            <select 
+                                id="fromCountry" 
+                                class="equivalents-select"
+                            >
+                                <option value="India">India</option>
+                                <option value="United States">United States</option>
+                                <option value="United Kingdom">United Kingdom</option>
+                                <option value="Canada">Canada</option>
+                                <option value="Australia">Australia</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="medicineName" class="block text-sm font-medium text-gray-700 mb-2">
+                                Medicine Name
+                            </label>
+                            <input 
+                                type="text" 
+                                id="medicineName" 
+                                placeholder="e.g., Paracetamol, Ibuprofen"
+                                class="equivalents-input"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="equivalents-column">
+                        <div class="mb-4">
+                            <label for="toCountry" class="block text-sm font-medium text-gray-700 mb-2">
+                                To Country
+                            </label>
+                            <select 
+                                id="toCountry" 
+                                class="equivalents-select"
+                            >
+                                <option value="India">India</option>
+                                <option value="United States" selected>United States</option>
+                                <option value="United Kingdom">United Kingdom</option>
+                                <option value="Canada">Canada</option>
+                                <option value="Australia">Australia</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Educational Reference Result
+                            </label>
+                            <div id="equivalentsResult" class="equivalents-result">
+                                <p class="text-gray-400 text-sm">Results will appear here after searching...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <div class="mt-6">
+                    <button 
+                        onclick="findMedicineEquivalent()" 
+                        class="equivalents-find-btn w-full"
+                    >
+                        Find Equivalent
+                    </button>
+                </div>
+
+                <!-- Educational Disclaimer -->
+                <div class="mt-6 p-3 bg-blue-50 border-l-4 border-blue-400 rounded">
+                    <p class="text-xs text-gray-700">
+                        <strong>Educational Reference Only:</strong> This tool provides educational information about medicines. It does not suggest replacement, prescription, or treatment. Consult a licensed healthcare professional for medical advice.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

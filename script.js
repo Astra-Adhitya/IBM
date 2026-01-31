@@ -19,6 +19,18 @@ let selectedFilters = {
     context: []
 };
 
+// Profile and Patient History State (Session-only, not persisted)
+let profileData = {
+    ageGroup: '',
+    country: 'Global'
+};
+
+let patientHistory = {
+    allergies: [],
+    chronicConditions: [],
+    pregnancyStatus: false
+};
+
 // ============================================
 // Mock Bot Responses
 // TODO: Replace this with actual API integration
@@ -242,6 +254,8 @@ function toggleFilter(filterType, value) {
  */
 function updateCountryContext(country) {
     selectedCountry = country;
+    // Sync with profile country display if profile panel is open
+    updateProfileCountryDisplay();
 }
 
 /**
@@ -260,12 +274,46 @@ function buildStructuredQuery(userMessage) {
         contextualMessage = `Provide educational medical information based on medicines commonly used in ${selectedCountry}. ${userMessage}`;
     }
     
+    // Add medical context from patient history (if available)
+    // This context will be prepended to help AI avoid mentioning conflicting medicines
+    let medicalContext = '';
+    const hasMedicalContext = patientHistory.allergies.length > 0 || 
+                              patientHistory.chronicConditions.length > 0 || 
+                              patientHistory.pregnancyStatus;
+    
+    if (hasMedicalContext) {
+        const contextParts = [];
+        if (patientHistory.allergies.length > 0) {
+            contextParts.push(`Known allergies: ${patientHistory.allergies.join(', ')}`);
+        }
+        if (patientHistory.chronicConditions.length > 0 && !patientHistory.chronicConditions.includes('None')) {
+            contextParts.push(`Chronic conditions: ${patientHistory.chronicConditions.join(', ')}`);
+        }
+        if (patientHistory.pregnancyStatus) {
+            contextParts.push('Pregnancy status: Yes');
+        }
+        
+        if (contextParts.length > 0) {
+            medicalContext = `The user has reported the following medical context: ${contextParts.join('; ')}. Provide educational information and avoid mentioning medicines that may conflict. `;
+            contextualMessage = medicalContext + contextualMessage;
+        }
+    }
+    
     // Build structured query object
     const structuredQuery = {
         userMessage: userMessage,
-        contextualMessage: contextualMessage, // Internal message with country context
+        contextualMessage: contextualMessage, // Internal message with country and medical context
         mode: currentMode,
         country: selectedCountry,
+        profile: {
+            ageGroup: profileData.ageGroup || null,
+            country: profileData.country || selectedCountry
+        },
+        patientHistory: hasMedicalContext ? {
+            allergies: patientHistory.allergies.length > 0 ? patientHistory.allergies : null,
+            chronicConditions: patientHistory.chronicConditions.length > 0 && !patientHistory.chronicConditions.includes('None') ? patientHistory.chronicConditions : null,
+            pregnancyStatus: patientHistory.pregnancyStatus || null
+        } : null,
         filters: {
             medicineBrand: medicineBrand || null,
             drugCategory: selectedFilters.category.length > 0 ? selectedFilters.category : null,
@@ -451,7 +499,8 @@ function handleKeyPress(event) {
  */
 function openMedicineEquivalents() {
     const panel = document.getElementById('equivalentsPanel');
-    panel.classList.add('active');
+    panel.classList.remove('is-hidden');
+    panel.classList.add('is-visible');
     // Prevent body scroll when panel is open
     document.body.style.overflow = 'hidden';
 }
@@ -461,7 +510,8 @@ function openMedicineEquivalents() {
  */
 function closeMedicineEquivalents() {
     const panel = document.getElementById('equivalentsPanel');
-    panel.classList.remove('active');
+    panel.classList.remove('is-visible');
+    panel.classList.add('is-hidden');
     // Restore body scroll
     document.body.style.overflow = '';
 }
@@ -580,4 +630,308 @@ Important Educational Note: This information is for educational reference only. 
     } else {
         return responses['default'];
     }
+}
+
+// ============================================
+// Profile Menu Functions
+// Session-only profile and patient history management
+// ============================================
+
+/**
+ * Toggle profile dropdown menu
+ */
+function toggleProfileMenu() {
+    const dropdown = document.getElementById('profileDropdown');
+    const isVisible = dropdown.classList.contains('is-visible');
+    
+    if (isVisible) {
+        dropdown.classList.remove('is-visible');
+        dropdown.classList.add('is-hidden');
+        document.removeEventListener('click', closeProfileMenuOnOutsideClick);
+    } else {
+        dropdown.classList.remove('is-hidden');
+        dropdown.classList.add('is-visible');
+        // Close dropdown when clicking outside
+        setTimeout(() => {
+            document.addEventListener('click', closeProfileMenuOnOutsideClick);
+        }, 0);
+    }
+}
+
+/**
+ * Close profile menu when clicking outside
+ */
+function closeProfileMenuOnOutsideClick(event) {
+    const dropdown = document.getElementById('profileDropdown');
+    const profileBtn = document.querySelector('.profile-icon-btn');
+    
+    if (!dropdown.contains(event.target) && !profileBtn.contains(event.target)) {
+        dropdown.classList.remove('is-visible');
+        dropdown.classList.add('is-hidden');
+        document.removeEventListener('click', closeProfileMenuOnOutsideClick);
+    }
+}
+
+/**
+ * Open Your Profile panel
+ */
+function openYourProfile() {
+    closeProfileMenu();
+    const panel = document.getElementById('yourProfilePanel');
+    panel.classList.remove('is-hidden');
+    panel.classList.add('is-visible');
+    document.body.style.overflow = 'hidden';
+    
+    // Sync country display with current selection
+    updateProfileCountryDisplay();
+    
+    // Load saved profile data
+    const ageGroupSelect = document.getElementById('ageGroup');
+    if (ageGroupSelect) {
+        ageGroupSelect.value = profileData.ageGroup || '';
+    }
+}
+
+/**
+ * Close Your Profile panel
+ */
+function closeYourProfile() {
+    const panel = document.getElementById('yourProfilePanel');
+    panel.classList.remove('is-visible');
+    panel.classList.add('is-hidden');
+    document.body.style.overflow = '';
+}
+
+/**
+ * Update profile data when age group changes
+ */
+function updateProfileData() {
+    const ageGroupSelect = document.getElementById('ageGroup');
+    if (ageGroupSelect) {
+        profileData.ageGroup = ageGroupSelect.value;
+    }
+    
+    // Sync country with main country selector
+    profileData.country = selectedCountry;
+    updateProfileCountryDisplay();
+}
+
+/**
+ * Update profile country display (read-only, synced with main selector)
+ */
+function updateProfileCountryDisplay() {
+    const countryDisplay = document.getElementById('profileCountryDisplay');
+    if (countryDisplay) {
+        countryDisplay.textContent = selectedCountry || 'Global';
+        profileData.country = selectedCountry;
+    }
+}
+
+/**
+ * Open Patient History panel
+ */
+function openPatientHistory() {
+    closeProfileMenu();
+    const panel = document.getElementById('patientHistoryPanel');
+    panel.classList.remove('is-hidden');
+    panel.classList.add('is-visible');
+    document.body.style.overflow = 'hidden';
+    
+    // Load saved patient history
+    loadPatientHistoryUI();
+}
+
+/**
+ * Close Patient History panel
+ */
+function closePatientHistory() {
+    const panel = document.getElementById('patientHistoryPanel');
+    panel.classList.remove('is-visible');
+    panel.classList.add('is-hidden');
+    document.body.style.overflow = '';
+}
+
+/**
+ * Load patient history data into UI
+ */
+function loadPatientHistoryUI() {
+    // Load allergies
+    const allergiesList = document.getElementById('allergiesList');
+    if (allergiesList) {
+        allergiesList.innerHTML = '';
+        patientHistory.allergies.forEach(allergy => {
+            addAllergyChip(allergy);
+        });
+    }
+    
+    // Load chronic conditions
+    patientHistory.chronicConditions.forEach(condition => {
+        const chip = document.querySelector(`[data-condition="${condition}"]`);
+        if (chip) {
+            chip.classList.add('selected');
+        }
+    });
+    
+    // Load pregnancy status
+    const pregnancyCheckbox = document.getElementById('pregnancyStatus');
+    if (pregnancyCheckbox) {
+        pregnancyCheckbox.checked = patientHistory.pregnancyStatus;
+    }
+}
+
+/**
+ * Handle Enter key press in allergy input
+ */
+function handleAllergyKeyPress(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        addAllergy();
+    }
+}
+
+/**
+ * Add allergy from input field
+ */
+function addAllergy() {
+    const allergyInput = document.getElementById('allergyInput');
+    const allergy = allergyInput.value.trim();
+    
+    if (!allergy) return;
+    
+    // Check if allergy already exists
+    if (patientHistory.allergies.includes(allergy)) {
+        allergyInput.value = '';
+        return;
+    }
+    
+    // Add to state
+    patientHistory.allergies.push(allergy);
+    
+    // Add chip to UI
+    addAllergyChip(allergy);
+    
+    // Clear input
+    allergyInput.value = '';
+    
+    // Update patient history
+    updatePatientHistory();
+}
+
+/**
+ * Add allergy chip to UI
+ */
+function addAllergyChip(allergy) {
+    const allergiesList = document.getElementById('allergiesList');
+    if (!allergiesList) return;
+    
+    const chip = document.createElement('div');
+    chip.className = 'allergy-chip';
+    chip.innerHTML = `
+        <span>${escapeHtml(allergy)}</span>
+        <button 
+            onclick="removeAllergy('${escapeHtml(allergy)}')" 
+            class="allergy-chip-remove"
+            aria-label="Remove allergy"
+        >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+    `;
+    allergiesList.appendChild(chip);
+}
+
+/**
+ * Remove allergy from list
+ */
+function removeAllergy(allergy) {
+    // Remove from state
+    const index = patientHistory.allergies.indexOf(allergy);
+    if (index > -1) {
+        patientHistory.allergies.splice(index, 1);
+    }
+    
+    // Reload UI
+    loadPatientHistoryUI();
+    
+    // Update patient history
+    updatePatientHistory();
+}
+
+/**
+ * Toggle chronic condition selection
+ */
+function toggleChronicCondition(condition) {
+    const chip = document.querySelector(`[data-condition="${condition}"]`);
+    if (!chip) return;
+    
+    const isSelected = chip.classList.contains('selected');
+    
+    // If "None" is selected, clear all others
+    if (condition === 'None') {
+        if (!isSelected) {
+            // Clear all selections
+            document.querySelectorAll('.profile-condition-chip').forEach(c => {
+                c.classList.remove('selected');
+            });
+            patientHistory.chronicConditions = ['None'];
+            chip.classList.add('selected');
+        } else {
+            // Deselect "None"
+            chip.classList.remove('selected');
+            patientHistory.chronicConditions = [];
+        }
+    } else {
+        // Remove "None" if it's selected
+        const noneChip = document.querySelector('[data-condition="None"]');
+        if (noneChip && noneChip.classList.contains('selected')) {
+            noneChip.classList.remove('selected');
+            patientHistory.chronicConditions = patientHistory.chronicConditions.filter(c => c !== 'None');
+        }
+        
+        // Toggle condition
+        if (isSelected) {
+            chip.classList.remove('selected');
+            patientHistory.chronicConditions = patientHistory.chronicConditions.filter(c => c !== condition);
+        } else {
+            chip.classList.add('selected');
+            if (!patientHistory.chronicConditions.includes(condition)) {
+                patientHistory.chronicConditions.push(condition);
+            }
+        }
+    }
+    
+    // Update patient history
+    updatePatientHistory();
+}
+
+/**
+ * Update patient history data
+ */
+function updatePatientHistory() {
+    const pregnancyCheckbox = document.getElementById('pregnancyStatus');
+    if (pregnancyCheckbox) {
+        patientHistory.pregnancyStatus = pregnancyCheckbox.checked;
+    }
+    
+    // TODO: This patient history data will be included in queries sent to IBM Watsonx Orchestrate
+    // The medical context is already integrated into buildStructuredQuery() function
+    // Example API integration:
+    // const query = buildStructuredQuery(userMessage);
+    // // query.patientHistory contains the medical context
+    // const response = await fetch('/api/chat', {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify(query)
+    // });
+}
+
+/**
+ * Close profile menu
+ */
+function closeProfileMenu() {
+    const dropdown = document.getElementById('profileDropdown');
+    dropdown.classList.remove('is-visible');
+    dropdown.classList.add('is-hidden');
+    document.removeEventListener('click', closeProfileMenuOnOutsideClick);
 }

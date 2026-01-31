@@ -2,6 +2,95 @@
    MedAI Healthcare Chatbot - Styles
    ============================================ */
 
+/* ============================================
+   Shared Animation System
+   Consistent, calm, hospital-grade animations
+   ============================================ */
+
+/* Shared transition timing for consistency */
+:root {
+    --animation-duration-fast: 200ms;
+    --animation-duration-normal: 250ms;
+    --animation-duration-slow: 300ms;
+    --animation-easing: ease-out;
+}
+
+/* ============================================
+   Shared Visibility System
+   Smooth fade and slide animations for modals/dropdowns
+   ============================================ */
+
+.is-hidden {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+    pointer-events: none;
+    transition: opacity 220ms var(--animation-easing),
+                transform 220ms var(--animation-easing);
+}
+
+.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+    transition: opacity 220ms var(--animation-easing),
+                transform 220ms var(--animation-easing);
+}
+
+/* Reusable animation classes */
+.animate-fade-in {
+    animation: fadeIn var(--animation-duration-normal) var(--animation-easing);
+}
+
+.animate-slide-up {
+    animation: slideUp var(--animation-duration-normal) var(--animation-easing);
+}
+
+.animate-slide-down {
+    animation: slideDown var(--animation-duration-normal) var(--animation-easing);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Smooth button press animation */
+.button-press {
+    transition: transform var(--animation-duration-fast) var(--animation-easing),
+                background-color var(--animation-duration-fast) var(--animation-easing),
+                box-shadow var(--animation-duration-fast) var(--animation-easing);
+}
+
+.button-press:active {
+    transform: scale(0.98);
+}
+
 /* Custom scrollbar for chat area */
 .chat-scroll::-webkit-scrollbar {
     width: 8px;
@@ -96,7 +185,9 @@
    ============================================ */
 
 .problem-button {
-    transition: all 0.2s ease-out;
+    transition: transform var(--animation-duration-fast) var(--animation-easing),
+                background-color var(--animation-duration-fast) var(--animation-easing),
+                box-shadow var(--animation-duration-fast) var(--animation-easing);
 }
 
 .problem-button:hover {
@@ -105,12 +196,14 @@
 }
 
 .problem-button:active {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.98);
     box-shadow: 0 1px 4px rgba(153, 8, 8, 0.1);
 }
 
 .cta-chip {
-    transition: all 0.2s ease-out;
+    transition: transform var(--animation-duration-fast) var(--animation-easing),
+                background-color var(--animation-duration-fast) var(--animation-easing),
+                box-shadow var(--animation-duration-fast) var(--animation-easing);
 }
 
 .cta-chip:hover {
@@ -119,11 +212,13 @@
 }
 
 .cta-chip:active {
-    transform: translateY(0) scale(0.98);
+    transform: translateY(0) scale(0.97);
 }
 
 .send-button {
-    transition: all 0.2s ease-out;
+    transition: transform var(--animation-duration-fast) var(--animation-easing),
+                background-color var(--animation-duration-fast) var(--animation-easing),
+                box-shadow var(--animation-duration-fast) var(--animation-easing);
 }
 
 .send-button:hover {
@@ -132,7 +227,7 @@
 }
 
 .send-button:active {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.98);
     box-shadow: 0 1px 4px rgba(153, 8, 8, 0.15);
 }
 
@@ -154,7 +249,10 @@
     border-radius: 6px;
     font-size: 14px;
     font-weight: 500;
-    transition: all 0.2s ease-out;
+    transition: background-color var(--animation-duration-normal) var(--animation-easing),
+                color var(--animation-duration-normal) var(--animation-easing),
+                box-shadow var(--animation-duration-normal) var(--animation-easing),
+                transform var(--animation-duration-fast) var(--animation-easing);
     border: none;
     cursor: pointer;
     background: transparent;
@@ -165,6 +263,10 @@
     background: white;
     color: #990808;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.mode-toggle-button:active {
+    transform: scale(0.97);
 }
 
 /* ============================================
@@ -201,7 +303,10 @@
     font-weight: 500;
     color: #374151;
     cursor: pointer;
-    transition: all 0.2s ease-out;
+    transition: border-color var(--animation-duration-normal) var(--animation-easing),
+                background-color var(--animation-duration-normal) var(--animation-easing),
+                color var(--animation-duration-normal) var(--animation-easing),
+                transform var(--animation-duration-fast) var(--animation-easing);
 }
 
 .filter-chip:hover {
@@ -221,6 +326,10 @@
     border-color: #7a0606;
 }
 
+.filter-chip:active {
+    transform: scale(0.97);
+}
+
 /* ============================================
    Medicine Equivalents Panel Styles
    Slide-in side panel for medicine reference
@@ -228,6 +337,12 @@
 
 .medicine-equivalents-btn {
     padding-right: 1rem;
+    transition: background-color var(--animation-duration-normal) var(--animation-easing),
+                transform var(--animation-duration-fast) var(--animation-easing);
+}
+
+.medicine-equivalents-btn:active {
+    transform: scale(0.98);
 }
 
 .equivalents-panel {
@@ -237,11 +352,18 @@
     width: 100%;
     height: 100%;
     z-index: 1000;
-    display: none;
+    transition: opacity var(--animation-duration-slow) var(--animation-easing);
+    /* Always in DOM, visibility controlled by is-hidden/is-visible */
 }
 
-.equivalents-panel.active {
-    display: block;
+.equivalents-panel.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.equivalents-panel.is-visible {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .equivalents-panel-overlay {
@@ -252,10 +374,10 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     opacity: 0;
-    transition: opacity 0.3s ease-out;
+    transition: opacity var(--animation-duration-slow) var(--animation-easing);
 }
 
-.equivalents-panel.active .equivalents-panel-overlay {
+.equivalents-panel.is-visible .equivalents-panel-overlay {
     opacity: 1;
 }
 
@@ -269,13 +391,13 @@
     background: white;
     box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
     transform: translateX(100%);
-    transition: transform 0.3s ease-out;
+    transition: transform var(--animation-duration-slow) var(--animation-easing);
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
 
-.equivalents-panel.active .equivalents-panel-content {
+.equivalents-panel.is-visible .equivalents-panel-content {
     transform: translateX(0);
 }
 
@@ -295,7 +417,7 @@
     border: none;
     cursor: pointer;
     border-radius: 6px;
-    transition: all 0.2s ease-out;
+    transition: all var(--animation-duration-fast) var(--animation-easing);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -306,10 +428,17 @@
     color: #990808;
 }
 
+.equivalents-close-btn:active {
+    transform: scale(0.95);
+}
+
 .equivalents-panel-body {
     flex: 1;
     padding: 1.5rem;
     overflow-y: auto;
+    animation: fadeIn var(--animation-duration-normal) var(--animation-easing);
+    animation-delay: 100ms;
+    animation-fill-mode: both;
 }
 
 .equivalents-layout {
@@ -344,7 +473,10 @@
     font-size: 14px;
     color: #374151;
     background: white;
-    transition: all 0.2s ease-out;
+    transition: border-color var(--animation-duration-normal) var(--animation-easing),
+                background-color var(--animation-duration-normal) var(--animation-easing),
+                box-shadow var(--animation-duration-normal) var(--animation-easing),
+                transform var(--animation-duration-fast) var(--animation-easing);
 }
 
 .equivalents-select {
@@ -367,6 +499,10 @@
     outline: none;
     border-color: #990808;
     box-shadow: 0 0 0 2px rgba(153, 8, 8, 0.1);
+}
+
+.equivalents-select:active {
+    transform: scale(0.98);
 }
 
 .equivalents-result {
@@ -403,7 +539,9 @@
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease-out;
+    transition: background-color var(--animation-duration-normal) var(--animation-easing),
+                transform var(--animation-duration-fast) var(--animation-easing),
+                box-shadow var(--animation-duration-fast) var(--animation-easing);
 }
 
 .equivalents-find-btn:hover {
@@ -413,7 +551,7 @@
 }
 
 .equivalents-find-btn:active {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.98);
     box-shadow: 0 2px 6px rgba(153, 8, 8, 0.2);
 }
 
@@ -422,6 +560,352 @@
     color: #9ca3af;
     cursor: not-allowed;
     transform: none;
+}
+
+/* ============================================
+   Profile Menu Styles
+   Profile dropdown and panels
+   ============================================ */
+
+.profile-menu-container {
+    position: relative;
+}
+
+.profile-icon-btn {
+    padding: 0.5rem;
+    color: #990808;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color var(--animation-duration-normal) var(--animation-easing),
+                color var(--animation-duration-normal) var(--animation-easing),
+                transform var(--animation-duration-fast) var(--animation-easing);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-icon-btn:hover {
+    background: #fef2f2;
+    color: #7a0606;
+}
+
+.profile-icon-btn:active {
+    transform: scale(0.95);
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 180px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    overflow: hidden;
+    /* Always in DOM, visibility controlled by is-hidden/is-visible */
+}
+
+.profile-dropdown.is-hidden {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+    pointer-events: none;
+    transition: opacity 220ms var(--animation-easing),
+                transform 220ms var(--animation-easing);
+}
+
+.profile-dropdown.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+    transition: opacity 220ms var(--animation-easing),
+                transform 220ms var(--animation-easing);
+}
+
+.profile-dropdown-item {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background-color var(--animation-duration-normal) var(--animation-easing),
+                color var(--animation-duration-normal) var(--animation-easing),
+                transform var(--animation-duration-fast) var(--animation-easing);
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.profile-dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.profile-dropdown-item:hover {
+    background: #fef2f2;
+    color: #990808;
+}
+
+.profile-dropdown-item:active {
+    transform: scale(0.98);
+}
+
+/* Profile Panel Styles (reusing equivalents panel structure) */
+.profile-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    transition: opacity var(--animation-duration-slow) var(--animation-easing);
+    /* Always in DOM, visibility controlled by is-hidden/is-visible */
+}
+
+.profile-panel.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.profile-panel.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.profile-panel-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity var(--animation-duration-slow) var(--animation-easing);
+}
+
+.profile-panel.is-visible .profile-panel-overlay {
+    opacity: 1;
+}
+
+.profile-panel-content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 90%;
+    max-width: 600px;
+    height: 100%;
+    background: white;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+    transform: translateX(100%);
+    transition: transform var(--animation-duration-slow) var(--animation-easing);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.profile-panel.is-visible .profile-panel-content {
+    transform: translateX(0);
+}
+
+.profile-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: white;
+}
+
+.profile-close-btn {
+    padding: 0.5rem;
+    color: #6b7280;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all var(--animation-duration-fast) var(--animation-easing);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-close-btn:hover {
+    background: #f3f4f6;
+    color: #990808;
+}
+
+.profile-close-btn:active {
+    transform: scale(0.95);
+}
+
+.profile-panel-body {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    animation: fadeIn var(--animation-duration-normal) var(--animation-easing);
+    animation-delay: 100ms;
+    animation-fill-mode: both;
+}
+
+.profile-select,
+.profile-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #374151;
+    background: white;
+    transition: border-color var(--animation-duration-normal) var(--animation-easing),
+                background-color var(--animation-duration-normal) var(--animation-easing),
+                box-shadow var(--animation-duration-normal) var(--animation-easing),
+                transform var(--animation-duration-fast) var(--animation-easing);
+}
+
+.profile-select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23374151' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px;
+    padding-right: 36px;
+}
+
+.profile-select:hover {
+    border-color: #990808;
+    background-color: #fef2f2;
+}
+
+.profile-select:focus,
+.profile-input:focus {
+    outline: none;
+    border-color: #990808;
+    box-shadow: 0 0 0 2px rgba(153, 8, 8, 0.1);
+}
+
+.profile-select:active {
+    transform: scale(0.98);
+}
+
+.profile-readonly-field {
+    padding: 0.75rem;
+    background: #f9fafb;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #374151;
+}
+
+.profile-add-btn {
+    padding: 0.75rem 1.25rem;
+    background: #990808;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--animation-duration-normal) var(--animation-easing),
+                transform var(--animation-duration-fast) var(--animation-easing);
+    white-space: nowrap;
+}
+
+.profile-add-btn:hover {
+    background: #7a0606;
+}
+
+.profile-add-btn:active {
+    transform: scale(0.98);
+}
+
+/* Allergy Chip Styles */
+.allergy-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #fef2f2;
+    border: 1.5px solid #990808;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #990808;
+}
+
+.allergy-chip-remove {
+    background: transparent;
+    border: none;
+    color: #990808;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    transition: background-color var(--animation-duration-normal) var(--animation-easing),
+                color var(--animation-duration-normal) var(--animation-easing),
+                transform var(--animation-duration-fast) var(--animation-easing);
+}
+
+.allergy-chip-remove:hover {
+    background: #990808;
+    color: white;
+}
+
+.allergy-chip-remove:active {
+    transform: scale(0.9);
+}
+
+/* Chronic Condition Chip Styles */
+.profile-condition-chip {
+    padding: 8px 16px;
+    background: #f9fafb;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    transition: border-color var(--animation-duration-normal) var(--animation-easing),
+                background-color var(--animation-duration-normal) var(--animation-easing),
+                color var(--animation-duration-normal) var(--animation-easing),
+                transform var(--animation-duration-fast) var(--animation-easing);
+}
+
+.profile-condition-chip:hover {
+    border-color: #990808;
+    background: #fef2f2;
+    color: #990808;
+}
+
+.profile-condition-chip.selected {
+    background: #990808;
+    border-color: #990808;
+    color: white;
+}
+
+.profile-condition-chip.selected:hover {
+    background: #7a0606;
+    border-color: #7a0606;
+}
+
+.profile-condition-chip:active {
+    transform: scale(0.97);
+}
+
+/* Checkbox Styles */
+.profile-checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: #990808;
+    cursor: pointer;
 }
 
 /* ============================================
@@ -451,7 +935,10 @@
     color: #374151;
     background: white;
     cursor: pointer;
-    transition: all 0.2s ease-out;
+    transition: border-color var(--animation-duration-normal) var(--animation-easing),
+                background-color var(--animation-duration-normal) var(--animation-easing),
+                box-shadow var(--animation-duration-normal) var(--animation-easing),
+                transform var(--animation-duration-fast) var(--animation-easing);
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23374151' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
@@ -468,4 +955,8 @@
     outline: none;
     border-color: #990808;
     box-shadow: 0 0 0 2px rgba(153, 8, 8, 0.1);
+}
+
+.country-select:active {
+    transform: scale(0.98);
 }

@@ -516,6 +516,33 @@ function handleKeyPress(event) {
 }
 
 // ============================================
+// About Us Panel Functions
+// Informational panel about MedAI's purpose and features
+// ============================================
+
+/**
+ * Open the About Us panel
+ */
+function openAboutUs() {
+    const panel = document.getElementById('aboutUsPanel');
+    panel.classList.remove('is-hidden');
+    panel.classList.add('is-visible');
+    // Prevent body scroll when panel is open
+    document.body.style.overflow = 'hidden';
+}
+
+/**
+ * Close the About Us panel
+ */
+function closeAboutUs() {
+    const panel = document.getElementById('aboutUsPanel');
+    panel.classList.remove('is-visible');
+    panel.classList.add('is-hidden');
+    // Restore body scroll
+    document.body.style.overflow = '';
+}
+
+// ============================================
 // Medicine Equivalents Finder Functions
 // Educational reference tool for cross-country medicine comparison
 // ============================================

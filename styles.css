@@ -335,12 +335,14 @@
    Slide-in side panel for medicine reference
    ============================================ */
 
+.about-us-btn,
 .medicine-equivalents-btn {
     padding-right: 1rem;
     transition: background-color var(--animation-duration-normal) var(--animation-easing),
                 transform var(--animation-duration-fast) var(--animation-easing);
 }
 
+.about-us-btn:active,
 .medicine-equivalents-btn:active {
     transform: scale(0.98);
 }

@@ -33,6 +33,12 @@
                 </div>
                 <div class="flex items-center gap-4" style="padding-right: 1rem;">
                     <button 
+                        onclick="openAboutUs()" 
+                        class="about-us-btn px-4 py-2 text-sm font-medium text-medai-primary hover:bg-medai-bg rounded-lg transition-colors"
+                    >
+                        About Us
+                    </button>
+                    <button 
                         onclick="openMedicineEquivalents()" 
                         class="medicine-equivalents-btn px-4 py-2 text-sm font-medium text-medai-primary hover:bg-medai-bg rounded-lg transition-colors"
                     >
@@ -453,6 +459,106 @@
                 <div class="mt-6 p-3 bg-gray-50 border-l-4 border-gray-400 rounded">
                     <p class="text-xs text-gray-700">
                         <strong>Session Only:</strong> This information is used only during this session and is not saved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Us Panel -->
+    <div id="aboutUsPanel" class="profile-panel is-hidden">
+        <div class="profile-panel-overlay" onclick="closeAboutUs()"></div>
+        <div class="profile-panel-content">
+            <div class="profile-panel-header">
+                <h2 class="text-xl font-semibold text-gray-800">About MedAI</h2>
+                <button 
+                    onclick="closeAboutUs()" 
+                    class="profile-close-btn"
+                    aria-label="Close panel"
+                >
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="profile-panel-body">
+                <!-- What is MedAI? -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">What is MedAI?</h3>
+                    <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                        MedAI is an AI-powered healthcare information assistant designed to provide educational, safety-focused support for understanding symptoms, medicines, and health-related questions. MedAI serves as a trusted companion to help you make more informed decisions about your health.
+                    </p>
+                    <p class="text-sm text-gray-700 leading-relaxed">
+                        <strong>Important:</strong> MedAI does not diagnose medical conditions, prescribe medications, or provide medical treatment. All information provided is educational in nature and should be used to facilitate informed conversations with licensed healthcare professionals.
+                    </p>
+                </div>
+
+                <!-- Purpose & Vision -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Purpose & Vision</h3>
+                    <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                        Our mission is to help users better understand symptoms, medicines, and safety considerations through clear, accessible information. MedAI aims to:
+                    </p>
+                    <ul class="list-disc list-inside text-sm text-gray-700 leading-relaxed space-y-2 ml-2">
+                        <li>Provide understandable explanations of medical information</li>
+                        <li>Help reduce confusion caused by regional medicine differences</li>
+                        <li>Promote informed conversations with healthcare professionals</li>
+                        <li>Support safer medication understanding and awareness</li>
+                    </ul>
+                </div>
+
+                <!-- Problems We Aim to Solve -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Problems MedAI Aims to Solve</h3>
+                    <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                        MedAI addresses several critical challenges in healthcare information access:
+                    </p>
+                    <ul class="list-disc list-inside text-sm text-gray-700 leading-relaxed space-y-2 ml-2">
+                        <li><strong>Lack of accessible information:</strong> Many people struggle to find clear, understandable medical information when they need it</li>
+                        <li><strong>Regional medicine differences:</strong> Medicine names vary across countries, causing confusion when traveling or relocating</li>
+                        <li><strong>Safety risks:</strong> Risk of misunderstanding medicines due to allergies, medical history, or drug interactions</li>
+                        <li><strong>Medicine equivalence:</strong> Difficulty identifying equivalent medicines across different regions and healthcare systems</li>
+                    </ul>
+                </div>
+
+                <!-- Key Features -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Key Features</h3>
+                    <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                        MedAI offers several features designed to support your health information needs:
+                    </p>
+                    <ul class="list-disc list-inside text-sm text-gray-700 leading-relaxed space-y-2 ml-2">
+                        <li><strong>Symptom and Medicine Information:</strong> Chat-based interface for asking questions about symptoms and medications</li>
+                        <li><strong>Country-Aware Context:</strong> Medical information tailored to your selected country or region</li>
+                        <li><strong>Medicine Equivalent Finder:</strong> Educational reference tool for comparing medicines across countries by active ingredient or therapeutic purpose</li>
+                        <li><strong>Optional Medical Context:</strong> Optionally provide age, sex, allergies, and medical history for improved safety guidance (session-only, not stored)</li>
+                        <li><strong>Simple and Advanced Modes:</strong> Choose between straightforward interactions or detailed filtering options</li>
+                    </ul>
+                </div>
+
+                <!-- Responsible AI & Safety -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Responsible AI & Safety</h3>
+                    <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                        MedAI is designed with safety and responsibility at its core:
+                    </p>
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 rounded p-4 mb-3">
+                        <ul class="list-disc list-inside text-sm text-gray-700 leading-relaxed space-y-2 ml-2">
+                            <li><strong>MedAI does not replace doctors:</strong> Always consult licensed medical professionals for diagnosis, treatment, and medical advice</li>
+                            <li><strong>No diagnoses or prescriptions:</strong> MedAI provides educational information only and does not diagnose conditions or prescribe medications</li>
+                            <li><strong>Educational purpose:</strong> All information is intended for educational use to support informed healthcare decisions</li>
+                            <li><strong>Privacy-focused:</strong> User-provided context (age, sex, medical history) is optional and stored only for the current session</li>
+                        </ul>
+                    </div>
+                    <p class="text-sm text-gray-700 leading-relaxed">
+                        <strong>Remember:</strong> If you have a medical emergency, contact emergency services immediately. For personalized medical advice, always consult with a qualified healthcare provider.
+                    </p>
+                </div>
+
+                <!-- Footer Note -->
+                <div class="mt-6 p-3 bg-gray-50 border-l-4 border-gray-400 rounded">
+                    <p class="text-xs text-gray-700">
+                        <strong>MedAI Healthcare Information Assistant</strong> — Empowering informed health decisions through accessible, educational information.
                     </p>
                 </div>
             </div>

@@ -20,8 +20,11 @@ let selectedFilters = {
 };
 
 // Profile and Patient History State (Session-only, not persisted)
+// Age and sex are used only to tailor educational safety information
+// This context is advisory and non-prescriptive
 let profileData = {
-    ageGroup: '',
+    age: null, // Exact age (number)
+    sex: '', // 'Male' or 'Female'
     country: 'Global'
 };
 
@@ -274,6 +277,28 @@ function buildStructuredQuery(userMessage) {
         contextualMessage = `Provide educational medical information based on medicines commonly used in ${selectedCountry}. ${userMessage}`;
     }
     
+    // Add user profile context (age and sex) for educational safety guidance
+    // This context is advisory and non-prescriptive - used only to tailor general safety language
+    let profileContext = '';
+    const hasProfileContext = (profileData.age !== null && profileData.age > 0) || profileData.sex;
+    
+    if (hasProfileContext) {
+        const profileParts = [];
+        if (profileData.age !== null && profileData.age > 0) {
+            profileParts.push(`age: ${profileData.age}`);
+        }
+        if (profileData.sex) {
+            profileParts.push(`sex: ${profileData.sex}`);
+        }
+        
+        if (profileParts.length > 0) {
+            // Use this context only to tailor educational safety information
+            // Do NOT imply diagnosis, prescription, or guaranteed safety
+            profileContext = `User has reported ${profileParts.join(', ')}. Use this only to tailor educational safety information. `;
+            contextualMessage = profileContext + contextualMessage;
+        }
+    }
+    
     // Add medical context from patient history (if available)
     // This context will be prepended to help AI avoid mentioning conflicting medicines
     let medicalContext = '';
@@ -306,7 +331,8 @@ function buildStructuredQuery(userMessage) {
         mode: currentMode,
         country: selectedCountry,
         profile: {
-            ageGroup: profileData.ageGroup || null,
+            age: profileData.age || null,
+            sex: profileData.sex || null,
             country: profileData.country || selectedCountry
         },
         patientHistory: hasMedicalContext ? {
@@ -686,9 +712,17 @@ function openYourProfile() {
     updateProfileCountryDisplay();
     
     // Load saved profile data
-    const ageGroupSelect = document.getElementById('ageGroup');
-    if (ageGroupSelect) {
-        ageGroupSelect.value = profileData.ageGroup || '';
+    const ageInput = document.getElementById('userAge');
+    if (ageInput) {
+        ageInput.value = profileData.age || '';
+    }
+    
+    // Load sex selection
+    const sexRadios = document.querySelectorAll('input[name="userSex"]');
+    if (sexRadios.length > 0) {
+        sexRadios.forEach(radio => {
+            radio.checked = (radio.value === profileData.sex);
+        });
     }
 }
 
@@ -703,12 +737,54 @@ function closeYourProfile() {
 }
 
 /**
- * Update profile data when age group changes
+ * Validate age input - must be a positive number
+ * @param {HTMLInputElement} input - Age input element
+ */
+function validateAgeInput(input) {
+    const value = input.value.trim();
+    if (value === '') {
+        // Clear age if input is empty
+        profileData.age = null;
+        return;
+    }
+    
+    const age = parseInt(value, 10);
+    if (isNaN(age) || age < 1 || age > 150) {
+        // Reset to empty if invalid
+        input.value = '';
+        profileData.age = null;
+    } else {
+        // Update profile data with valid age
+        profileData.age = age;
+    }
+}
+
+/**
+ * Update profile data when age or sex changes
+ * Age and sex are stored session-only for educational safety guidance
  */
 function updateProfileData() {
-    const ageGroupSelect = document.getElementById('ageGroup');
-    if (ageGroupSelect) {
-        profileData.ageGroup = ageGroupSelect.value;
+    const ageInput = document.getElementById('userAge');
+    if (ageInput) {
+        const ageValue = ageInput.value.trim();
+        if (ageValue === '') {
+            profileData.age = null;
+        } else {
+            const age = parseInt(ageValue, 10);
+            if (!isNaN(age) && age > 0 && age <= 150) {
+                profileData.age = age;
+            } else {
+                profileData.age = null;
+            }
+        }
+    }
+    
+    // Get selected sex from radio buttons
+    const sexRadio = document.querySelector('input[name="userSex"]:checked');
+    if (sexRadio) {
+        profileData.sex = sexRadio.value;
+    } else {
+        profileData.sex = '';
     }
     
     // Sync country with main country selector

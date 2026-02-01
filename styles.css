@@ -908,6 +908,19 @@
     cursor: pointer;
 }
 
+/* Radio Button Styles */
+.profile-radio {
+    width: 18px;
+    height: 18px;
+    accent-color: #990808;
+    cursor: pointer;
+    transition: transform var(--animation-duration-fast) var(--animation-easing);
+}
+
+.profile-radio:active {
+    transform: scale(0.95);
+}
+
 /* ============================================
    Country Selector Styles
    Region-aware context selector

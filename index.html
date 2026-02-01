@@ -399,19 +399,46 @@
                 </p>
                 <div class="space-y-6">
                     <div>
-                        <label for="ageGroup" class="block text-sm font-medium text-gray-700 mb-2">
-                            Age Group
+                        <label for="userAge" class="block text-sm font-medium text-gray-700 mb-2">
+                            Your age
                         </label>
-                        <select 
-                            id="ageGroup" 
-                            class="profile-select"
+                        <input 
+                            type="number" 
+                            id="userAge" 
+                            placeholder="Enter your age"
+                            min="1"
+                            max="150"
+                            class="profile-input"
                             onchange="updateProfileData()"
-                        >
-                            <option value="">Select age group</option>
-                            <option value="Child">Child</option>
-                            <option value="Adult">Adult</option>
-                            <option value="Senior">Senior</option>
-                        </select>
+                            oninput="validateAgeInput(this)"
+                        />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Sex
+                        </label>
+                        <div class="flex gap-4">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input 
+                                    type="radio" 
+                                    name="userSex" 
+                                    value="Male"
+                                    class="profile-radio"
+                                    onchange="updateProfileData()"
+                                />
+                                <span class="text-sm text-gray-700">Male</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input 
+                                    type="radio" 
+                                    name="userSex" 
+                                    value="Female"
+                                    class="profile-radio"
+                                    onchange="updateProfileData()"
+                                />
+                                <span class="text-sm text-gray-700">Female</span>
+                            </label>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
